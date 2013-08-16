@@ -12,7 +12,13 @@ import util
 cm.cublas_init()
 
 # load data
-util.load('mnist49.dat', globals())
+try:
+    import os
+    codebase_path = os.environ['CODEBASE'] # Checkout folder
+    filename = os.path.join([codebase_path, "/deepnet/cudamat/examples/mnist49.dat"])
+except:
+    filename = "mnist49.dat"
+util.load(filename, globals())
 
 # Put training data onto the GPU.
 dat_train = dat_train/255.
@@ -21,17 +27,17 @@ dev_train = cm.CUDAMatrix(dat_train)
 dev_lbl = cm.CUDAMatrix(lbl_train)
 
 # training parameters
-epsilon = 0.01
-momentum = 0.9
+epsilon = 0.001
+momentum = 0.8
 
-num_epochs = 30
-batch_size = 128
+num_epochs = 100
+batch_size = 256 
 num_batches = dat_train.shape[1]/batch_size
 
 # model parameters
 dim_in = dat_train.shape[0]
 dim_out = 1
-num_hid = 1024
+num_hid = 2048
 
 # initialize weights
 w_w1 = cm.CUDAMatrix(dim_in ** -0.5 * np.random.randn(dim_in, num_hid))
